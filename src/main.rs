@@ -17,9 +17,9 @@ fn ownership_test() {
     println!("s1 = {}", s1);
 }
 
-fn takes_ownership_and_give_back(some_string: String) -> String{
+fn takes_ownership_and_give_back(some_string: String) -> String {
     print!("{}", some_string);
-    return some_string
+    return some_string;
 }
 
 fn reference_test() {
@@ -50,8 +50,6 @@ fn reference_test() {
     // let r2 = &s; // 没问题
     // let r3 = &mut s; // 大问题
     // println!("{}, {}, and {}", r1, r2, r3);
-
-
 }
 
 fn calculate_length(s: &String) -> usize {
@@ -59,12 +57,12 @@ fn calculate_length(s: &String) -> usize {
 }
 
 // 不可变变量的引用也是不可变的，想要通过引用改变值，就必须让引用是可变变量
-fn change_string(some_string:&mut String) {
+fn change_string(some_string: &mut String) {
     some_string.push_str(", world");
 }
 
 fn string_test() {
-    let mut s =  String::from("hello");
+    let mut s = String::from("hello");
     s.push(',');
     s.push_str(" world");
     // 可以直接加str，但是不能直接加String，需要borrow
@@ -75,8 +73,8 @@ fn string_test() {
     let s1 = String::from("hello,");
     let s2 = String::from("world!");
     let s3 = s1 + s2.as_str();
-    assert_eq!(s3,"hello,world!");
-    println!("{}",s3);
+    assert_eq!(s3, "hello,world!");
+    println!("{}", s3);
 
     // 有时候需要转义的字符很多，我们会希望使用更方便的方式来书写字符串: raw string.
     let raw_str = "Escapes don't work here: \x3F \u{211D}";
@@ -85,7 +83,7 @@ fn string_test() {
     let quotes = r#"And then I said: "There is no escape!""#;
     println!("{}", quotes);
     // 如果希望在字符串中使用 # 号，可以如下使用：
-    let  delimiter = r###"A string with "# in it. And even "##!"###;
+    let delimiter = r###"A string with "# in it. And even "##!"###;
     println!("{}", delimiter);
     // 填空
     let long_delimiter = r###"Hello, "##""###;
