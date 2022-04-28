@@ -14,6 +14,9 @@ fn main() {
 
     // 测试结构体
     struct_test();
+
+    // 测试枚举类型
+    enum_test();
 }
 
 fn ownership_test() {
@@ -131,4 +134,21 @@ fn struct_test() {
     println!("{}, {}", rect1.width, rect1.height);
     // 使用dbg宏，可以打印详细信息以及行号
     dbg!(&rect1);
+}
+
+#[derive(Debug)]
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn enum_test() {
+    // 枚举类型的不同成员可以是不同的类型
+    let m1 = Message::Quit;
+    let m2 = Message::Move { x: 1, y: 1 };
+    // todo 获取枚举成员内部的数据
+    let m3 = Message::ChangeColor(255, 255, 0);
+    println!("{:?}, {:?}, {:?}", m1, m2, m3)
 }
