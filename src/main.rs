@@ -7,7 +7,13 @@ fn main() {
     reference_test();
 
     // 测试字符串
-    string_test()
+    string_test();
+
+    // 测试三元组
+    turple_test();
+
+    // 测试结构体
+    struct_test();
 }
 
 fn ownership_test() {
@@ -93,4 +99,36 @@ fn string_test() {
     for c in "你好，世界".chars() {
         println!("{}", c);
     }
+}
+
+fn turple_test() {
+    // 使用. 来访问元组
+    let x: (i32, f64, u8) = (500, 6.4, 1);
+    let five_hundred = x.0;
+    let six_point_four = x.1;
+    let one = x.2;
+    println!("{}, {}, {}", five_hundred, six_point_four, one);
+
+    // 使用模式匹配来解构
+    let (i, f, u) = x;
+    println!("{}, {}, {}", i, f, u);
+}
+
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn struct_test() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    // 打印结构体，结构体必须实现Display或者Debug特征
+    println!("rect1 is {:?}", rect1);
+    println!("{}, {}", rect1.width, rect1.height);
+    // 使用dbg宏，可以打印详细信息以及行号
+    dbg!(&rect1);
 }
