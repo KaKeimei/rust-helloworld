@@ -5,6 +5,9 @@ fn main() {
 
     // 测试引用与解引用
     reference_test();
+
+    // 测试字符串
+    string_test()
 }
 
 fn ownership_test() {
@@ -58,4 +61,38 @@ fn calculate_length(s: &String) -> usize {
 // 不可变变量的引用也是不可变的，想要通过引用改变值，就必须让引用是可变变量
 fn change_string(some_string:&mut String) {
     some_string.push_str(", world");
+}
+
+fn string_test() {
+    let mut s =  String::from("hello");
+    s.push(',');
+    s.push_str(" world");
+    // 可以直接加str，但是不能直接加String，需要borrow
+    s += &"!".to_string();
+    println!("{}", s);
+
+    // 你只能将 String 跟 &str 类型进行拼接，并且 String 的所有权在此过程中会被 move
+    let s1 = String::from("hello,");
+    let s2 = String::from("world!");
+    let s3 = s1 + s2.as_str();
+    assert_eq!(s3,"hello,world!");
+    println!("{}",s3);
+
+    // 有时候需要转义的字符很多，我们会希望使用更方便的方式来书写字符串: raw string.
+    let raw_str = "Escapes don't work here: \x3F \u{211D}";
+    assert_eq!(raw_str, "Escapes don't work here: ? ℝ");
+    // 如果你希望在字符串中使用双引号，可以使用以下形式
+    let quotes = r#"And then I said: "There is no escape!""#;
+    println!("{}", quotes);
+    // 如果希望在字符串中使用 # 号，可以如下使用：
+    let  delimiter = r###"A string with "# in it. And even "##!"###;
+    println!("{}", delimiter);
+    // 填空
+    let long_delimiter = r###"Hello, "##""###;
+    assert_eq!(long_delimiter, "Hello, \"##\"");
+
+    // 填空，打印出 "你好，世界" 中的每一个字符
+    for c in "你好，世界".chars() {
+        println!("{}", c);
+    }
 }
