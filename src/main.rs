@@ -26,6 +26,9 @@ fn main() {
 
     // 测试方法
     method_test();
+
+    // 测试泛型
+    generic_test();
 }
 
 fn ownership_test() {
@@ -266,4 +269,23 @@ impl Message {
 // impl 可以定义多个
 impl Message {
     fn call_again(&self) {}
+}
+
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    // 结构体，方法也可以使用泛型
+    fn x(&self) -> &T {
+        return &self.x;
+    }
+}
+
+// 测试泛型
+fn generic_test() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("{}, {}", p.x(), p.y);
 }
