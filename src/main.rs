@@ -23,6 +23,9 @@ fn main() {
 
     // 测试模式匹配
     match_test();
+
+    // 测试方法
+    method_test();
 }
 
 fn ownership_test() {
@@ -230,5 +233,31 @@ fn plus_one(x: Option<i32>) -> Option<i32> {
     match x {
         None => None,
         Some(i) => Some(i + 1),
+    }
+}
+
+fn method_test() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+
+    let m = Message::Quit;
+    m.call();
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+impl Message {
+    fn call(&self) {
+        // 在这里定义方法体
     }
 }
