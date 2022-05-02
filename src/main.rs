@@ -20,6 +20,9 @@ fn main() {
 
     // 测试数组
     array_test();
+
+    // 测试模式匹配
+    match_test();
 }
 
 fn ownership_test() {
@@ -181,5 +184,51 @@ fn array_test() {
             sum += a[i];
         }
         println!("\t({:?} = {})", a, sum);
+    }
+}
+
+enum Action {
+    Say(String),
+    MoveTo(i32, i32),
+    ChangeColorRGB(u16, u16, u16),
+}
+
+fn match_test() {
+    let actions = [
+        Action::Say("Hello Rust".to_string()),
+        Action::MoveTo(1, 2),
+        Action::ChangeColorRGB(255, 255, 0),
+    ];
+    // 使用模式匹配来取出绑定值
+    for action in actions {
+        match action {
+            Action::Say(s) => {
+                println!("{}", s);
+            }
+            Action::MoveTo(x, y) => {
+                println!("point from (0, 0) move to ({}, {})", x, y);
+            }
+            // Action::ChangeColorRGB(r, g, _) => {
+            //     println!(
+            //         "change color into '(r:{}, g:{}, b:0)', 'b' has been ignored",
+            //         r, g,
+            //     );
+            // }
+            // 通配符，返回单元类型，什么也不发生
+            _ => (),
+        }
+    }
+
+    // 测试匹配值是否存在
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+    println!("six: {:?}, none {:?}", six, none)
+}
+
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
     }
 }
