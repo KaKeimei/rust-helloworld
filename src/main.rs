@@ -248,6 +248,7 @@ fn method_test() {
 
     let m = Message::Quit;
     m.call();
+    m.call_again()
 }
 
 impl Rectangle {
@@ -260,4 +261,9 @@ impl Message {
     fn call(&self) {
         // 在这里定义方法体
     }
+}
+
+// impl 可以定义多个
+impl Message {
+    fn call_again(&self) {}
 }
