@@ -36,6 +36,9 @@ fn main() {
 
     // 测试特征
     trait_test();
+
+    // 测试特征对象
+    trait_object_test();
 }
 
 fn ownership_test() {
@@ -459,4 +462,116 @@ fn example1() {
     let mut cacher = Cacher::new(|x| x + 1);
     assert_eq!(cacher.value(10), 11);
     assert_eq!(cacher.value(15), 11);
+}
+
+trait Draw {
+    fn draw(&self) -> String;
+}
+
+impl Draw for u8 {
+    fn draw(&self) -> String {
+        format!("u8: {}", *self)
+    }
+}
+
+impl Draw for f64 {
+    fn draw(&self) -> String {
+        format!("f64: {}", *self)
+    }
+}
+
+// 若 T 实现了 Draw 特征， 则调用该函数时传入的 Box<T> 可以被隐式转换成函数参数签名中的 Box<dyn Draw>
+fn draw1(x: Box<dyn Draw>) {
+    // 由于实现了 Deref 特征，Box 智能指针会自动解引用为它所包裹的值，然后调用该值对应的类型上定义的 `draw` 方法
+    x.draw();
+}
+
+fn draw2(x: &dyn Draw) {
+    x.draw();
+}
+
+// 测试特征对象
+fn trait_object_test() {
+    let x = 1.1f64;
+    // do_something(&x);
+    let y = 8u8;
+
+    // x 和 y 的类型 T 都实现了 `Draw` 特征，因为 Box<T> 可以在函数调用时隐式地被转换为特征对象 Box<dyn Draw>
+    // 基于 x 的值创建一个 Box<f64> 类型的智能指针，指针指向的数据被放置在了堆上
+    draw1(Box::new(x));
+    // 基于 y 的值创建一个 Box<u8> 类型的智能指针
+    draw1(Box::new(y));
+    draw2(&x);
+    draw2(&y);
+    trait_object_exec();
+}
+
+trait Bird {
+    fn quack(&self) -> String;
+}
+
+struct Duck;
+
+impl Duck {
+    fn swim(&self) {
+        println!("Look, the duck is swimming")
+    }
+}
+
+struct Swan;
+
+impl Swan {
+    fn fly(&self) {
+        println!("Look, the duck.. oh sorry, the swan is flying")
+    }
+}
+
+impl Bird for Duck {
+    fn quack(&self) -> String {
+        "duck duck".to_string()
+    }
+}
+
+impl Bird for Swan {
+    fn quack(&self) -> String {
+        "swan swan".to_string()
+    }
+}
+
+fn trait_object_exec() {
+    // 填空
+    let duck = Duck {};
+    duck.swim();
+
+    let bird = hatch_a_bird(2);
+    // 变成鸟儿后，它忘记了如何游，因此以下代码会报错
+    // bird.swim();
+    // 但它依然可以叫唤
+    assert_eq!(bird.quack(), "duck duck");
+
+    let bird = hatch_a_bird(1);
+    // 这只鸟儿忘了如何飞翔，因此以下代码会报错
+    // bird.fly();
+    // 但它也可以叫唤
+    assert_eq!(bird.quack(), "swan swan");
+
+    println!("Success!");
+
+    // 当类型不确定时，使用特征对象表示数组
+    let birds: [Box<dyn Bird>; 2] = [Box::new(Duck {}), Box::new(Swan {})];
+
+    for bird in birds {
+        bird.quack();
+        // 当 duck 和 swan 变成 bird 后，它们都忘了如何翱翔于天际，只记得该怎么叫唤了。。
+        // 因此，以下代码会报错
+        // bird.fly();
+    }
+}
+
+// 实现以下函数( 返回多个类型）
+fn hatch_a_bird(num: i32) -> Box<dyn Bird> {
+    if num == 2 {
+        return Box::new(Duck {});
+    }
+    return Box::new(Swan {});
 }
