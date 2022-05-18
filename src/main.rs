@@ -39,6 +39,9 @@ fn main() {
 
     // 测试特征对象
     trait_object_test();
+
+    // 测试vector
+    vector_test();
 }
 
 fn ownership_test() {
@@ -574,4 +577,77 @@ fn hatch_a_bird(num: i32) -> Box<dyn Bird> {
         return Box::new(Duck {});
     }
     return Box::new(Swan {});
+}
+
+fn vector_test() {
+    let mut v = vec![1, 2, 3, 4, 5];
+    // 使用下标获取元素
+    let third = &v[2];
+    println!("{}", third);
+    // 使用get方法获取元素
+    let third_get = v.get(2);
+    match third_get {
+        None => {}
+        Some(i) => {
+            println!("{}", i);
+        }
+    }
+
+    // 在这就会报错，因为在可变引用之后不能存在
+    // let first = &v[0];
+    v.push(6);
+    // 在这就没问题，因为可变引用已经消失
+    let first = &v[0];
+    println!("{}", first);
+    // 在迭代的过程中修改元素的值
+    for x in &mut v {
+        *x += 10
+    }
+    for x in v {
+        print!("{}, ", x)
+    }
+
+    println!();
+    // 使用枚举类型来存储不同类型
+    let v_enum = vec![
+        IpAddr::V4("127.0.0.1".to_string()),
+        IpAddr::V6("::1".to_string()),
+    ];
+    for x in v_enum {
+        println!("{:?}", x)
+    }
+
+    // 使用特征对象来实现
+    let x1 = &IpV4("127.0.0.1".to_string());
+    let x2 = &IpV6("::1".to_string());
+    let v_trait: Vec<&dyn IpAddrTrait> = vec![x1, x2];
+    for x in v_trait {
+        x.display();
+    }
+}
+
+#[derive(Debug)]
+enum IpAddr {
+    V4(String),
+    V6(String),
+}
+
+trait IpAddrTrait {
+    fn display(&self);
+}
+
+struct IpV4(String);
+
+struct IpV6(String);
+
+impl IpAddrTrait for IpV4 {
+    fn display(&self) {
+        println!("ipv4: {:?}", self.0)
+    }
+}
+
+impl IpAddrTrait for IpV6 {
+    fn display(&self) {
+        println!("ipv6: {:?}", self.0)
+    }
 }
