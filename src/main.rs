@@ -1,3 +1,7 @@
+use std::fmt::{Debug, Display, Error, Formatter};
+use std::ops;
+use std::ops::Mul;
+
 fn main() {
     println!("Hello, world!");
     // 测试所有权转移和归还
@@ -29,6 +33,9 @@ fn main() {
 
     // 测试泛型
     generic_test();
+
+    // 测试特征
+    trait_test();
 }
 
 fn ownership_test() {
@@ -288,4 +295,168 @@ fn generic_test() {
     let p = Point { x: 5, y: 10 };
 
     println!("{}, {}", p.x(), p.y);
+}
+
+pub trait Summary {
+    fn summarize(&self) -> String;
+    fn default_summary(&self) -> String {
+        String::from("(read more ...)")
+    }
+}
+
+pub struct Post {
+    pub title: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for Post {
+    fn summarize(&self) -> String {
+        format!("文章是{}, 作者是{}", self.title, self.content)
+    }
+}
+
+impl Display for Post {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        return Err(Error);
+    }
+}
+
+fn trait_test() {
+    let post = Post {
+        title: "Rust 语言介绍".to_string(),
+        author: "Sunface".to_string(),
+        content: "Rust 棒极了".to_string(),
+    };
+    println!("{}", post.summarize());
+    println!("{}", post.default_summary());
+    notify(&post);
+    notify_constrain(&post);
+    trait_exercise()
+}
+
+fn notify(item: &impl Summary) {
+    println!("Breaking news {}", item.summarize());
+}
+
+fn notify_constrain<T: Summary + Display>(item: &T) {
+    println!("Breaking news {}", item.summarize());
+}
+
+trait Hello {
+    fn say_hi(&self) -> String {
+        String::from("hi")
+    }
+
+    fn say_something(&self) -> String;
+}
+
+struct Student {}
+
+impl Hello for Student {
+    fn say_hi(&self) -> String {
+        return "hi".to_string();
+    }
+
+    fn say_something(&self) -> String {
+        return "I'm a good student".to_string();
+    }
+}
+
+struct Teacher {}
+
+impl Hello for Teacher {
+    fn say_hi(&self) -> String {
+        return "Hi, I'm your new teacher".to_string();
+    }
+
+    fn say_something(&self) -> String {
+        return "I'm not a bad teacher".to_string();
+    }
+}
+
+fn multiply<T: Mul<T, Output = T>>(a: T, b: T) -> T {
+    return a * b;
+}
+
+struct Foo;
+
+struct Bar;
+
+#[derive(PartialEq, Debug)]
+struct FooBar;
+
+#[derive(PartialEq, Debug)]
+struct BarFoo;
+
+// 下面的代码实现了自定义类型的相加： Foo + Bar = FooBar
+impl ops::Add<Bar> for Foo {
+    type Output = FooBar;
+
+    fn add(self, _rhs: Bar) -> FooBar {
+        FooBar
+    }
+}
+
+impl ops::Sub<Bar> for Foo {
+    type Output = BarFoo;
+
+    fn sub(self, _rhs: Bar) -> BarFoo {
+        BarFoo
+    }
+}
+
+fn trait_exercise() {
+    let s = Student {};
+    assert_eq!(s.say_hi(), "hi");
+    assert_eq!(s.say_something(), "I'm a good student");
+
+    let t = Teacher {};
+    assert_eq!(t.say_hi(), "Hi, I'm your new teacher");
+    assert_eq!(t.say_something(), "I'm not a bad teacher");
+
+    println!("Success!");
+
+    assert_eq!(6, multiply(2u8, 3u8));
+    assert_eq!(5.0, multiply(1.0, 5.0));
+
+    println!("Success!");
+
+    assert_eq!(Foo + Bar, FooBar);
+    assert_eq!(Foo - Bar, BarFoo);
+    example1();
+    // example2();
+}
+
+fn example1() {
+    // `T: Trait` 是最常使用的方式
+    // `T: Fn(u32) -> u32` 说明 `T` 只能接收闭包类型的参数
+    struct Cacher<T: Fn(u32) -> u32> {
+        calculation: T,
+        value: Option<u32>,
+    }
+
+    impl<T: Fn(u32) -> u32> Cacher<T> {
+        fn new(calculation: T) -> Cacher<T> {
+            Cacher {
+                calculation,
+                value: None,
+            }
+        }
+
+        fn value(&mut self, arg: u32) -> u32 {
+            match self.value {
+                Some(v) => v,
+                None => {
+                    let v = (self.calculation)(arg);
+                    self.value = Some(v);
+                    v
+                }
+            }
+        }
+    }
+
+    let mut cacher = Cacher::new(|x| x + 1);
+    assert_eq!(cacher.value(10), 11);
+    assert_eq!(cacher.value(15), 11);
 }
