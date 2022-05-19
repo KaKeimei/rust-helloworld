@@ -46,6 +46,9 @@ fn main() {
 
     // 测试map
     map_test();
+
+    // 测试类型转换
+    cast_test();
 }
 
 fn ownership_test() {
@@ -715,3 +718,14 @@ impl Viking {
 }
 
 impl Eq for Viking {}
+
+fn cast_test() {
+    let a: u8 = 10;
+    let b: u16 = 100;
+
+    let b_: u8 = b.try_into().unwrap();
+
+    if a < b_ {
+        println!("Ten is less than one hundred.");
+    }
+}
