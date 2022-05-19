@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::ops;
 use std::ops::Mul;
@@ -42,6 +43,9 @@ fn main() {
 
     // 测试vector
     vector_test();
+
+    // 测试map
+    map_test();
 }
 
 fn ownership_test() {
@@ -651,3 +655,63 @@ impl IpAddrTrait for IpV6 {
         println!("ipv6: {:?}", self.0)
     }
 }
+
+fn map_test() {
+    let team_list = vec![("China", 100), ("America", 40)];
+    let team_map: HashMap<&str, i32> = team_list.into_iter().collect();
+    println!("{:?}", team_map);
+
+    let name = String::from("Sunface");
+    let age = 18;
+    let mut handsome_boys = HashMap::with_capacity(1);
+    // 直接使用值作为key
+    handsome_boys.insert(name, age);
+
+    // 此处不能再使用name，所有权已经转移给了map
+    // println!("因为过于无耻，{}已经被从帅气男孩名单中除名", name);
+    // 基础类型没有所有权问题，是值拷贝
+    println!("还有，他的真实年龄远远不止{}岁", age);
+
+    // 遍历map
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+    for (key, value) in &scores {
+        println!("{}:{}", key, value);
+    }
+
+    // 更新
+    scores.insert("Blue".to_string(), 20);
+    // 不存在就更新，存在不更新
+    scores.entry("Yellow".to_string()).or_insert(5);
+    println!("{:?}", scores);
+
+    // 使用 HashMap 来存储 viking 的生命值
+    let vikings = HashMap::from([
+        (Viking::new("Einar", "Norway"), 25),
+        (Viking::new("Olaf", "Denmark"), 24),
+        (Viking::new("Harald", "Iceland"), 12),
+    ]);
+
+    // 使用 derive 的方式来打印 viking 的当前状态
+    for (viking, health) in &vikings {
+        println!("{:?} has {} hp", viking, health);
+    }
+}
+
+#[derive(PartialEq, Debug, Hash)]
+struct Viking {
+    name: String,
+    country: String,
+}
+
+impl Viking {
+    fn new(name: &str, country: &str) -> Viking {
+        Viking {
+            name: name.to_string(),
+            country: country.to_string(),
+        }
+    }
+}
+
+impl Eq for Viking {}
