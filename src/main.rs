@@ -5,6 +5,8 @@ use std::io::{ErrorKind, Read};
 use std::ops::Mul;
 use std::{io, ops};
 
+use rand::Rng;
+
 fn main() {
     println!("Hello, world!");
     // 测试所有权转移和归还
@@ -54,6 +56,9 @@ fn main() {
 
     // 测试错误处理
     error_test();
+
+    // 测试引入外部依赖
+    module_test();
 }
 
 fn ownership_test() {
@@ -766,4 +771,9 @@ fn read_username_from_file() -> Result<String, io::Error> {
     let mut s = String::new();
     File::open("hello.txt")?.read_to_string(&mut s);
     Ok(s)
+}
+
+fn module_test() {
+    let secret_number = rand::thread_rng().gen_range(1..100);
+    println!("random {}", secret_number);
 }
