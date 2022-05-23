@@ -6,8 +6,9 @@ use std::ops::Mul;
 use std::{io, ops};
 
 use rand::Rng;
-use rust_helloworld::eat_at_restaurant;
+
 use rust_helloworld::front_of_house::hosting::seat_at_table;
+use rust_helloworld::{eat_at_restaurant, mix, PrimaryColor};
 
 fn main() {
     println!("Hello, world!");
@@ -61,6 +62,9 @@ fn main() {
 
     // 测试引入外部依赖
     module_test();
+
+    // 测试文档和注释
+    comment_test();
 }
 
 fn ownership_test() {
@@ -780,4 +784,10 @@ fn module_test() {
     println!("random {}", secret_number);
     assert_eq!(seat_at_table().as_str(), "sit down please");
     assert_eq!(eat_at_restaurant().as_str(), "yummy yummy!");
+}
+
+fn comment_test() {
+    let blue = PrimaryColor::Blue;
+    let yellow = PrimaryColor::Yellow;
+    println!("{:?}", mix(blue, yellow));
 }
