@@ -6,6 +6,8 @@ use std::ops::Mul;
 use std::{io, ops};
 
 use rand::Rng;
+use rust_helloworld::eat_at_restaurant;
+use rust_helloworld::front_of_house::hosting::seat_at_table;
 
 fn main() {
     println!("Hello, world!");
@@ -776,4 +778,6 @@ fn read_username_from_file() -> Result<String, io::Error> {
 fn module_test() {
     let secret_number = rand::thread_rng().gen_range(1..100);
     println!("random {}", secret_number);
+    assert_eq!(seat_at_table().as_str(), "sit down please");
+    assert_eq!(eat_at_restaurant().as_str(), "yummy yummy!");
 }
