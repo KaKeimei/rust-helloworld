@@ -65,6 +65,9 @@ fn main() {
 
     // 测试文档和注释
     comment_test();
+
+    // 测试格式化
+    display_test();
 }
 
 fn ownership_test() {
@@ -790,4 +793,27 @@ fn comment_test() {
     let blue = PrimaryColor::Blue;
     let yellow = PrimaryColor::Yellow;
     println!("{:?}", mix(blue, yellow));
+}
+
+struct Person {
+    name: String,
+    age: u8,
+}
+
+impl Display for Person {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "大佬在上，请受我一拜，小弟姓名{}，年芳{}，家里无田又无车，生活苦哈哈",
+            self.name, self.age
+        )
+    }
+}
+
+fn display_test() {
+    let p = Person {
+        name: "sunface".to_string(),
+        age: 18,
+    };
+    println!("{}", p);
 }
